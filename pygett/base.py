@@ -5,30 +5,25 @@ Ge.tt Python bindings
 """
 
 import re
-import requests
-import simplejson
+import time
+
+from user import GettUser
+from request import GettRequest
+from shares import GettShare
+from files import GettFile
 
 class Gett(object):
     def __init__(self, *args, **kwargs):
-        self.test_mode = False
-        self.apikey = None
-        self.email = None
-        self.password = None
-        self.base_url = 'https://open.ge.tt/1'
         self.required_params = [
             'apikey',
             'email',
             'password'
         ]
 
-        self.access_token = None
-        self.refresh_token = None
-        self.access_token_expires = None
+        self._check_params(**kwargs)
+        self.user = GettUser(kwargs['apikey'], kwargs['email'], kwargs['password'])
 
-        self.check_params(**kwargs)
-        self.__dict__.update(**kwargs)
-
-    def check_params(self,**kwargs):
+    def _check_params(self,**kwargs):
         if not kwargs:
             raise AttributeError('Missing required parameters: %s' % self.required_params)
 
@@ -49,19 +44,32 @@ class Gett(object):
                 if not isinstance(v, str):
                     raise AttributeError("Parameter 'password' must be a string")
 
-    def _send(self, method, endpoint, jsonstr):
-        response = None
-        if method == "GET":
-            response = requests.get(endpoint)
-        else if method == "POST":
-            response = requests.post(endpoint, data=jsonstr)
-        else:
-            raise NotImplementedError("method %s is not implemented in this method" % method)
+    def get_shares(self, **kwargs):
+        endpoint = "/shares?accesstoken=%s" % self.user.access_token
+        if kwargs['limit'] && isinstance(kwargs['limit'], int) && kwargs['limit'] > 0:
+            endpoint = endpoint + "&limit=%d" % kwargs['limit']
+        if kwargs['skip'] && isinstance(kwargs['skip'], int) && kwargs['skip'] > 0:
+            endpoint = endpoint + "&skip=%d" % kwargs['skip']
 
-        if response.status_code == requests.codes.ok:
-            return simplejson.dumps(response.contents)
-        else:
-            response.raise_for_status()
+        response = GettRequest.get(endpoint)
 
+        rv = list()
 
+        if response.http_status == 200:
+            for share in response.response:
+                rv.append(GettShare(share, self.user))
+
+            return rv
+
+    def get_share(self, sharename):
+        response = GettRequest.get("/shares/%s" % sharename)
+
+        if response.http_status == 200:
+            return GettShare(response.response, self.user)
+
+    def get_file(self, sharename, fileid):
+        response = GettRequest.get("/files/%s/%d" % (sharename, fileid))
+
+        if response.http_status == 200:
+            return GettFile(response.response, self.user)
 
