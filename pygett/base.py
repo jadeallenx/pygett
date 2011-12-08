@@ -57,7 +57,7 @@ class Gett(object):
 
         if response.http_status == 200:
             for share in response.response:
-                rv.append(GettShare(share, self.user))
+                rv.append(GettShare(self.user, share))
 
             return rv
 
@@ -65,11 +65,11 @@ class Gett(object):
         response = GettRequest.get("/shares/%s" % sharename)
 
         if response.http_status == 200:
-            return GettShare(response.response, self.user)
+            return GettShare(self.user, response.response)
 
     def get_file(self, sharename, fileid):
         response = GettRequest.get("/files/%s/%d" % (sharename, fileid))
 
         if response.http_status == 200:
-            return GettFile(response.response, self.user)
+            return GettFile(self.user, response.response)
 
