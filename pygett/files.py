@@ -1,4 +1,4 @@
-from requests import GettRequest
+from request import GettRequest
 
 class GettFile(object):
     def __init__(self, user, **kwargs):
@@ -19,6 +19,12 @@ class GettFile(object):
         else:
             self.put_upload_url = None
             self.post_upload_url = None
+
+    def __repr__(self):
+        return "<GettFile: %s/%d>" % (self.sharename, self.fileid)
+
+    def __str__(self):
+        return "<GettFile: %s/%d>" % (self.sharename, self.fileid)
 
     def contents(self):
         response = GettRequest.get("/files/%s/%d/blob" % (self.sharename, self.fileid))
@@ -44,11 +50,17 @@ class GettFile(object):
             if response.http_status == 200:
                 return response.response['puturl']
 
+    def refresh(self):
+        response = GettRequest.get("/files/%s/%d" % (self.sharename, self.fileid))
+
+        if response.http_status == 200:
+            self.__init__(self.user, response.response)
+
     def send_data(self, **kwargs):
         put_url = None
         if kwargs['put_url']:
             put_url = kwargs['put_url']
-        else if self.put_upload_url:
+        elif self.put_upload_url:
             put_url = self.put_upload_url
         else:
             raise AttributeError("'put_url' cannot be None")

@@ -19,11 +19,17 @@ class GettUser(object):
         self.storage_used = None
         self.storage_limit = None
 
+    def __str__(self):
+        return "<GettUser: %s>" % self.fullname
+
+    def __repr__(self):
+        return "<GettUser: %s>" % self.fullname
+
     def login(self, params):
         if not params:
             params = {
-                apikey: self.apikey
-                email: self.email
+                apikey: self.apikey,
+                email: self.email,
                 password: self.password
             }
 

@@ -46,9 +46,9 @@ class Gett(object):
 
     def get_shares(self, **kwargs):
         endpoint = "/shares?accesstoken=%s" % self.user.access_token
-        if kwargs['limit'] && isinstance(kwargs['limit'], int) && kwargs['limit'] > 0:
+        if kwargs['limit'] and isinstance(kwargs['limit'], int) and kwargs['limit'] > 0:
             endpoint = endpoint + "&limit=%d" % kwargs['limit']
-        if kwargs['skip'] && isinstance(kwargs['skip'], int) && kwargs['skip'] > 0:
+        if kwargs['skip'] and isinstance(kwargs['skip'], int) and kwargs['skip'] > 0:
             endpoint = endpoint + "&skip=%d" % kwargs['skip']
 
         response = GettRequest.get(endpoint)

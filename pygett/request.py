@@ -53,15 +53,21 @@ class GettRequest(BaseRequest):
 
         self.__dict__.update(kwargs)
 
+    def __str__(self):
+        return "<GettRequest: %s %s>" % (self.type, self.endpoint)
+
+    def __repr__(self):
+        return "<GettRequest: %s %s>" % (self.type, self.endpoint)
+
     def __make_request(self, endpoint, **kwargs):
         status_code = None
         response = None
 
         if self.type == "GET":
             response = requests.get(self.endpoint)
-        else if self.type == "POST":
+        elif self.type == "POST":
             response = requests.post(self.endpoint, data=self.data)
-        else if self.type == "PUT":
+        elif self.type == "PUT":
             response = requests.put(self.endpoint, data=self.data)
         else:
             raise NotImplementedError("%s is not supported" % self.type)
