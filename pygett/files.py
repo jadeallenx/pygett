@@ -13,7 +13,7 @@ class GettFile(object):
 
         self.__dict__.update(kwargs)
 
-        if kwargs['upload']:
+        if 'upload' in kwargs:
             self.put_upload_url = kwargs['upload']['puturl']
             self.post_upload_url = kwargs['upload']['posturl']
         else:
@@ -21,23 +21,23 @@ class GettFile(object):
             self.post_upload_url = None
 
     def __repr__(self):
-        return "<GettFile: %s/%d>" % (self.sharename, self.fileid)
+        return "<GettFile: %s (%s/%s)>" % (self.filename, self.sharename, self.fileid)
 
     def __str__(self):
-        return "<GettFile: %s/%d>" % (self.sharename, self.fileid)
+        return "<GettFile: %s (%s/%s)>" % (self.filename, self.sharename, self.fileid)
 
     def contents(self):
-        response = GettRequest.get("/files/%s/%d/blob" % (self.sharename, self.fileid))
+        response = GettRequest().get("/files/%s/%s/blob" % (self.sharename, self.fileid))
 
         return response.response
 
     def thumbnail(self):
-        response = GettRequest.get("/files/%s/%d/blob/thumb" % (self.sharename, self.fileid))
+        response = GettRequest().get("/files/%s/%s/blob/thumb" % (self.sharename, self.fileid))
 
         return response.response
 
     def destroy(self):
-        response = GettRequest.post("/files/%s/%d/destroy?accesstoken=%s" % self.user.access_token)
+        response = GettRequest().post(("/files/%s/%s/destroy?accesstoken=%s" % self.user.access_token()), None)
 
         if response.http_status == 200:
             return True
@@ -46,12 +46,12 @@ class GettFile(object):
         if self.put_upload_url:
             return self.put_upload_url
         else:
-            response = GettRequest.get("/files/%s/%d/upload?accesstoken=%s" % (self.sharename, self.fileid, self.user.access_token))
+            response = GettRequest().get("/files/%s/%s/upload?accesstoken=%s" % (self.sharename, self.fileid, self.user.access_token()))
             if response.http_status == 200:
                 return response.response['puturl']
 
     def refresh(self):
-        response = GettRequest.get("/files/%s/%d" % (self.sharename, self.fileid))
+        response = GettRequest().get("/files/%s/%s" % (self.sharename, self.fileid))
 
         if response.http_status == 200:
             self.__init__(self.user, response.response)
@@ -65,7 +65,7 @@ class GettFile(object):
         else:
             raise AttributeError("'put_url' cannot be None")
 
-        response = GettRequest.put(put_url, kwargs['data'])
+        response = GettRequest().put(put_url, kwargs['data'])
 
         if response.http_status == 200:
             return True

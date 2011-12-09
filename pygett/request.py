@@ -1,6 +1,7 @@
 
 import requests
-import simplejson
+import simplejson as json
+import pickle
 
 class GettResponse(object):
     def __init__(self, http_status, response):
@@ -11,7 +12,7 @@ class GettResponse(object):
     def _unserialize(self, response):
         if response:
             try:
-                return json.dumps(response)
+                return json.loads(response)
             except:
                 return response
         return None
@@ -47,11 +48,11 @@ class BaseRequest(object):
 
 class GettRequest(BaseRequest):
     def __init__(self, *args, **kwargs):
+        super(BaseRequest,self).__init__(*args, **kwargs)
+        self.base_url = "https://open.ge.tt/1"
         self.endpoint = None
         self.type = None
         self.data = None
-
-        self.__dict__.update(kwargs)
 
     def __str__(self):
         return "<GettRequest: %s %s>" % (self.type, self.endpoint)
@@ -59,9 +60,12 @@ class GettRequest(BaseRequest):
     def __repr__(self):
         return "<GettRequest: %s %s>" % (self.type, self.endpoint)
 
-    def __make_request(self, endpoint, **kwargs):
+    def _make_request(self, endpoint, **kwargs):
         status_code = None
         response = None
+
+        self.endpoint = endpoint
+        self.__dict__.update(kwargs)
 
         if self.type == "GET":
             response = requests.get(self.endpoint)
@@ -72,4 +76,9 @@ class GettRequest(BaseRequest):
         else:
             raise NotImplementedError("%s is not supported" % self.type)
 
-        return GettResponse(response.status_code, response.content)
+        if response.status_code == requests.codes.ok:
+            return GettResponse(response.status_code, response.content)
+        else:
+            print "endpoint: %s" % self.endpoint
+            print pickle.dumps(self.__dict__)
+            response.raise_for_status()

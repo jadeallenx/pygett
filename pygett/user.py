@@ -2,7 +2,7 @@
 Gett User class
 """
 
-import time
+from time import time
 from request import GettRequest
 
 class GettUser(object):
@@ -20,25 +20,31 @@ class GettUser(object):
         self.storage_limit = None
 
     def __str__(self):
-        return "<GettUser: %s>" % self.fullname
+        if self.fullname:
+            return "<GettUser: %s>" % self.fullname
+        else:
+            return "<GettUser: %s (not logged in)>" % self.email
 
     def __repr__(self):
-        return "<GettUser: %s>" % self.fullname
-
-    def login(self, params):
+        if self.fullname:
+            return "<GettUser: %s>" % self.fullname
+        else:
+            return "<GettUser: %s (not logged in)>" % self.email
+            
+    def login(self, **params):
         if not params:
             params = {
-                apikey: self.apikey,
-                email: self.email,
-                password: self.password
+                "apikey": self.apikey,
+                "email": self.email,
+                "password": self.password
             }
 
-        response = GettRequest.post("/users/login", params)
+        response = GettRequest().post("/users/login", params)
 
         if response.http_status == 200:
             self._access_token = response.response['accesstoken']
             self.refresh_token = response.response['refreshtoken']
-            self.access_token_expires = localtime() + response.response['expires']
+            self.access_token_expires = int(time()) + response.response['expires']
             self.userid = response.response['user']['userid']
             self.fullname = response.response['user']['fullname']
             self.storage_used = response.response['user']['storage']['used']
@@ -46,15 +52,15 @@ class GettUser(object):
 
     def access_token(self):
         if not self._access_token:
-            self.login
+            self.login()
 
-        if localtime() > ( self.access_token_expires - self.access_token_grace ):
-            self.login({ refreshtoken: self.refresh_token })
+        if time() > ( self.access_token_expires - self.access_token_grace ):
+            self.login({ "refreshtoken": self.refresh_token })
 
         return self._access_token
 
     def refresh_user(self):
-        response = GettRequest.get("/users/me?accesstoken=%s" % self.access_token)
+        response = GettRequest().get("/users/me?accesstoken=%s" % self.access_token())
 
         if response.http_status == 200:
            self.userid = response.response['userid']

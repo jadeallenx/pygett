@@ -45,66 +45,70 @@ class Gett(object):
                     raise AttributeError("Parameter 'password' must be a string")
 
     def get_shares(self, **kwargs):
-        endpoint = "/shares?accesstoken=%s" % self.user.access_token
-        if kwargs['limit'] and isinstance(kwargs['limit'], int) and kwargs['limit'] > 0:
+        endpoint = "/shares?accesstoken=%s" % self.user.access_token()
+        if 'limit' in kwargs and isinstance(kwargs['limit'], int) and kwargs['limit'] > 0:
             endpoint = endpoint + "&limit=%d" % kwargs['limit']
-        if kwargs['skip'] and isinstance(kwargs['skip'], int) and kwargs['skip'] > 0:
+        if 'skip' in kwargs and isinstance(kwargs['skip'], int) and kwargs['skip'] > 0:
             endpoint = endpoint + "&skip=%d" % kwargs['skip']
 
-        response = GettRequest.get(endpoint)
+        response = GettRequest().get(endpoint)
 
         rv = list()
 
         if response.http_status == 200:
             for share in response.response:
-                rv.append(GettShare(self.user, share))
+                rv.append(GettShare(self.user, **share))
 
             return rv
 
     def get_share(self, sharename):
-        response = GettRequest.get("/shares/%s" % sharename)
+        response = GettRequest().get("/shares/%s" % sharename)
 
         if response.http_status == 200:
-            return GettShare(self.user, response.response)
+            return GettShare(self.user, **response.response)
 
     def get_file(self, sharename, fileid):
-        response = GettRequest.get("/files/%s/%d" % (sharename, fileid))
+        response = GettRequest().get("/files/%s/%d" % (sharename, fileid))
 
         if response.http_status == 200:
-            return GettFile(self.user, response.response)
+            return GettFile(self.user, **response.response)
 
     def create_share(self, **kwargs):
         params = None
-        if kwargs['title']:
-            params = {
-                title: kwargs['title']
-            }
+        if 'title' in kwargs:
+            params = { "title": kwargs['title'] }
 
-        response = GettRequest.post("/shares/create?accesstoken=%s" % self.user.access_token, params)
+        response = GettRequest().post(("/shares/create?accesstoken=%s" % self.user.access_token()), params)
 
         if response.http_status == 200:
-            return GettShare(self.user, response.response)
+            return GettShare(self.user, **response.response)
 
     def upload_file(self, **kwargs):
+        """
+            filename: required
+            sharename: optional
+            title: optional
+            data: required
+        """
         params = None
-        if not kwargs['filename']:
+        if 'filename' not in kwargs:
             return AttributeError("Parameter 'filename' must be given")
         else:
             params = {
-                filename: kwargs['filename']
+                "filename": kwargs['filename']
             }
 
         sharename = None
-        if not kwargs['sharename']:
-            share = self.create_share(title = kwargs['title']) 
+        if 'sharename' not in kwargs:
+            share = self.create_share(title=kwargs['title']) 
             sharename = share.sharename
         else:
             sharename = kwargs['sharename']
 
-        response = GettRequest.post("/files/%s/create?accesstoken=%s" % (sharename, self.user.accesstoken))
+        response = GettRequest().post("/files/%s/create?accesstoken=%s" % (sharename, self.user.accesstoken), params)
 
         f = None
         if response.http_status == 200:
-            f = GettFile(self.user, response.response)
+            f = GettFile(self.user, **response.response)
             return f.send_file(f.put_upload_url, data=kwargs['data'])
 

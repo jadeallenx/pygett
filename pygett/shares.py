@@ -9,12 +9,15 @@ class GettShare(object):
         self.created = None
         self.files = list()
 
-        files = kwargs['files']
-        del kwargs['files']
+        if 'files' in kwargs:
+            files = kwargs['files']
+            del kwargs['files']
+            for f in files:
+                if not 'sharename' in f:
+                    f['sharename'] = self.sharename
+                self.files.append(GettFile(self.user, **f))
 
         self.__dict__.update(kwargs)
-        for f in files:
-            self.files.append(GettFile(self.user, f))
 
     def __repr__(self):
         return "<GettShare: %s>" % self.sharename
@@ -23,24 +26,25 @@ class GettShare(object):
         return "<GettShare: %s>" % self.sharename
 
     def update(self, **kwargs):
-        if kwargs['title']:
-            params = {
-                'title': kwargs['title']
-            }
-            response = GettRequest.post("/shares/%s/update?accesstoken=%s" % (self.sharename, self.user.access_token), params)
+        if 'title' in kwargs:
+            params = { "title": kwargs['title'] }
+        else:
+            params = { "title": None }
 
-            if response.http_status == 200:
-                self.title = response.response['title']
+        response = GettRequest().post("/shares/%s/update?accesstoken=%s" % (self.sharename, self.user.access_token()), params)
+
+        if response.http_status == 200:
+            self.__init__(self.user, **response.response)
 
     def destroy(self):
-        response = GettRequest.post("/shares/%s/destroy?accesstoken=%s" % (self.sharename, self.user.access_token))
+        response = GettRequest().post("/shares/%s/destroy?accesstoken=%s" % (self.sharename, self.user.access_token()), None)
 
         if response.http_status == 200:
             return True
 
     def refresh(self):
-        response = GettRequest.get("/shares/%s" % self.sharename)
+        response = GettRequest().get("/shares/%s" % self.sharename)
 
         if response.http_status == 200:
-            self.__init__(self.user, response.response)
+            self.__init__(self.user, **response.response)
 
