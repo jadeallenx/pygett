@@ -1,7 +1,7 @@
 
 import requests
 import simplejson as json
-import pickle
+from exceptions import GettError
 
 class GettResponse(object):
     def __init__(self, http_status, response):
@@ -79,6 +79,4 @@ class GettRequest(BaseRequest):
         if response.status_code == requests.codes.ok:
             return GettResponse(response.status_code, response.content)
         else:
-            print "endpoint: %s" % self.endpoint
-            print pickle.dumps(self.__dict__)
-            response.raise_for_status()
+            raise GettError(response.status_code, self.endpoint, response.content)

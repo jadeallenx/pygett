@@ -92,23 +92,33 @@ class Gett(object):
         """
         params = None
         if 'filename' not in kwargs:
-            return AttributeError("Parameter 'filename' must be given")
+            raise AttributeError("Parameter 'filename' must be given")
         else:
             params = {
                 "filename": kwargs['filename']
             }
 
+        if 'data' not in kwargs:
+            raise AttributeError("Parameter 'data' must be given")
+
         sharename = None
         if 'sharename' not in kwargs:
-            share = self.create_share(title=kwargs['title']) 
+            share = None
+            if 'title' in kwargs:
+                share = self.create_share(title=kwargs['title']) 
+            else:
+                share = self.create_share()
             sharename = share.sharename
         else:
             sharename = kwargs['sharename']
 
-        response = GettRequest().post("/files/%s/create?accesstoken=%s" % (sharename, self.user.accesstoken), params)
+        response = GettRequest().post("/files/%s/create?accesstoken=%s" % (sharename, self.user.access_token()), params)
 
         f = None
         if response.http_status == 200:
+            if 'sharename' not in response.response:
+                response.response['sharename'] = sharename
             f = GettFile(self.user, **response.response)
-            return f.send_file(f.put_upload_url, data=kwargs['data'])
+            if f.send_data(data=kwargs['data']):
+                return f
 
