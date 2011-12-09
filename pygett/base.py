@@ -73,3 +73,38 @@ class Gett(object):
         if response.http_status == 200:
             return GettFile(self.user, response.response)
 
+    def create_share(self, **kwargs):
+        params = None
+        if kwargs['title']:
+            params = {
+                title: kwargs['title']
+            }
+
+        response = GettRequest.post("/shares/create?accesstoken=%s" % self.user.access_token, params)
+
+        if response.http_status == 200:
+            return GettShare(self.user, response.response)
+
+    def upload_file(self, **kwargs):
+        params = None
+        if not kwargs['filename']:
+            return AttributeError("Parameter 'filename' must be given")
+        else:
+            params = {
+                filename: kwargs['filename']
+            }
+
+        sharename = None
+        if not kwargs['sharename']:
+            share = self.create_share(title = kwargs['title']) 
+            sharename = share.sharename
+        else:
+            sharename = kwargs['sharename']
+
+        response = GettRequest.post("/files/%s/create?accesstoken=%s" % (sharename, self.user.accesstoken))
+
+        f = None
+        if response.http_status == 200:
+            f = GettFile(self.user, response.response)
+            return f.send_file(f.put_upload_url, data=kwargs['data'])
+
