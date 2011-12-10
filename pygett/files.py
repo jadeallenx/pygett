@@ -58,12 +58,16 @@ class GettFile(object):
 
     def send_data(self, **kwargs):
         put_url = None
-        if kwargs['put_url']:
+        if 'put_url' in kwargs:
             put_url = kwargs['put_url']
-        elif self.put_upload_url:
-            put_url = self.put_upload_url
         else:
-            raise AttributeError("'put_url' cannot be None")
+            put_url = self.put_upload_url
+
+        if 'data' not in kwargs:
+            raise AttributeError("'data' parameter is required")
+
+        if not isinstance(kwargs['data'], str):
+            raise TypeError("'data' parameter must be of type 'str'")
 
         response = GettRequest().put(put_url, kwargs['data'])
 
