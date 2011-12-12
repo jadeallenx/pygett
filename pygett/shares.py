@@ -14,7 +14,7 @@ class GettShare(object):
             del kwargs['files']
             for f in files:
                 if not 'sharename' in f:
-                    f['sharename'] = self.sharename
+                    f['sharename'] = kwargs['sharename']
                 self.files.append(GettFile(self.user, **f))
 
         self.__dict__.update(kwargs)

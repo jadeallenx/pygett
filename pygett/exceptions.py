@@ -9,12 +9,12 @@ class GettError(Exception):
         if isinstance(params, str):
             try:
                 self.__dict__.update(json.loads(params))
-            except JSONDecodeError:
-                self.error = http_status
+            except:
+                self.error = params
 
     def __str__(self):
-        return "<GettError: %s>" % self.error
+        return "<GettError: (%s) %s>" % (self.http_status, self.error)
 
     def __repr__(self):
-        return "<GettError: %s>" % self.error
+        return "<GettError: (%s) %s>" % (self.http_status, self.error)
 

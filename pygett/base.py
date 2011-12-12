@@ -43,15 +43,29 @@ class Gett(object):
             if k == 'password':
                 if not isinstance(v, str):
                     raise AttributeError("Parameter 'password' must be a string")
-
-    def get_shares(self, **kwargs):
+    
+    def _get_shares(self, **kwargs):
         endpoint = "/shares?accesstoken=%s" % self.user.access_token()
         if 'limit' in kwargs and isinstance(kwargs['limit'], int) and kwargs['limit'] > 0:
             endpoint = endpoint + "&limit=%d" % kwargs['limit']
         if 'skip' in kwargs and isinstance(kwargs['skip'], int) and kwargs['skip'] > 0:
             endpoint = endpoint + "&skip=%d" % kwargs['skip']
 
-        response = GettRequest().get(endpoint)
+        return GettRequest().get(endpoint)
+
+    def get_shares(self, **kwargs):
+        response = self._get_shares(**kwargs)
+
+        rv = dict()
+
+        if response.http_status == 200:
+            for share in response.response:
+                rv[share['sharename']] = GettShare(self.user, **share)
+
+            return rv
+
+    def get_shares_list(self, **kwargs):
+        response = self._get_shares(**kwargs)
 
         rv = list()
 
