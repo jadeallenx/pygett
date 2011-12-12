@@ -1,11 +1,43 @@
 """
 Gett User class
+:author Mark Allen
+:version 1.0
 """
 
 from time import time
 from request import GettRequest
 
 class GettUser(object):
+    """
+    ========
+    GettUser
+    ========
+
+    Encapsulates Gett user functionality
+
+    Attributes
+    ==========
+    This object has the following attributes:
+    - ``apikey`` The API key assigned by Gett for an application
+    - ``email`` The email linked to the API key
+    - ``password`` The password linked to the API key
+
+    After a successful login the following attributes are populated:
+    - ``refresh_token`` Used to get a new valid access token without requiring the API key, email and password
+    - ``access_token_expires`` - Epoch seconds until the current access token is no longer valid. Typically 86400 seconds from login. (Suitable for use with ``time.localtime()``)
+    - ``access_token_grace`` - How many seconds before an access token is scheduled to expire to attempt a renewal. (Defaults to 3600 seconds)
+    - ``userid`` - User ID string supplied by Gett
+    - ``fullname`` - The full name linked to an authenticated user account
+    - ``storage_used`` - The amount of storage consumed (in total) for this user account. (Unit: bytes)
+    - ``storage_limit`` - The maximum number of bytes available for storage. (Unit: bytes)
+
+    Methods
+    =======
+    - ``login()`` Use the provided credentials to get an access token
+    - ``access_token()`` Return a valid access token 
+    - ``refresh()`` Update this object with data from the remote server
+    """
+
     def __init__(self, apikey, email, password):
         self.apikey = apikey
         self.email = email
@@ -32,6 +64,23 @@ class GettUser(object):
             return "<GettUser: %s (not logged in)>" % self.email
             
     def login(self, **params):
+        """
+        **login**
+
+        Use the current credentials to get a valid Gett access token.
+
+        Input:
+            * A dict of parameters to use for the login attempt (optional)
+
+        Output:
+            * ``True``
+
+        Example::
+            
+            if client.user.login():
+                print "You have %s bytes of storage remaining." % ( client.user.storage_limit - client_user.storage_used )
+        """
+
         if not params:
             params = {
                 "apikey": self.apikey,
@@ -50,7 +99,25 @@ class GettUser(object):
             self.storage_used = response.response['user']['storage']['used']
             self.storage_limit = response.response['user']['storage']['limit']
 
+            return True
+
     def access_token(self):
+        """
+        **access_token**
+
+        Returns a valid access token.  If the user is not currently logged in, attempts to do so.
+        If the current time exceeds the grace period, attempts to retrieve a new access token.
+
+        Input:
+            * None
+
+        Output:
+            * A valid access token
+
+        Example::
+
+            print "Your access token is currently %s" % client.user.access_token()
+        """
         if not self._access_token:
             self.login()
 
@@ -59,7 +126,25 @@ class GettUser(object):
 
         return self._access_token
 
-    def refresh_user(self):
+    def refresh(self):
+        """
+        **refresh**
+
+        Refresh this user object with data from the Gett service
+
+        Input:
+            * None
+
+        Output:
+            * ``True``
+
+        Example::
+
+            if client.user.refresh():
+                print "User data refreshed!"
+                print "You have %s bytes of storage remaining." % ( client.user.storage_limit - client_user.storage_used )
+
+        """
         response = GettRequest().get("/users/me?accesstoken=%s" % self.access_token())
 
         if response.http_status == 200:
@@ -67,3 +152,5 @@ class GettUser(object):
            self.fullname = response.response['fullname']
            self.storage_used = response.response['storage']['used']
            self.storage_limit = response.response['storage']['limit']
+
+           return True

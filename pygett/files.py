@@ -1,6 +1,44 @@
+"""
+Ge.tt Python bindings
+:author Mark Allen
+:version 1.0
+"""
+
 from request import GettRequest
 
 class GettFile(object):
+    """
+    ========
+    GettFile
+    ========
+
+    Encapsulate a file in the Gett service.
+
+    Attributes
+    ==========
+
+    This object has the following attributes:
+    - ``fileid`` - A file id as assigned by the Gett service
+    - ``sharename`` - The sharename in which this file is contained
+    - ``downloads`` - The number of downloads of this file
+    - ``getturl`` - The URL at which this file can be viewed in a browser
+    - ``filename`` - The user specified filename 
+    - ``readystate`` - The Gett state of this file
+
+    During file uploads, the following attributes will be set:
+    - ``put_upload_url`` - A URL suitable for use with the PUT HTTP verb (see ``send_file()``_)
+    - ``post_upload_url`` - A URL suitable for use with the POST HTTP verb 
+
+    Methods
+    =======
+    - ``contents()`` - Download the contents of this file
+    - ``thumbnail()`` - Get a thumbnail of this file (if it is image data)
+    - ``destroy()`` - Remove this file and its content from the Gett service
+    - ``upload_url()`` - Get an upload_url to overwrite file's content
+    - ``send_data()`` - Transmit data to the Gett service for this file's metadata
+    - ``refresh()`` - Update file metadata from Gett service
+    """
+
     def __init__(self, user, **kwargs):
         self.user = user
         self.fileid = None
