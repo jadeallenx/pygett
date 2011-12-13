@@ -12,7 +12,11 @@ the `Ge.tt Developer's Documentation <http://ge.tt/developers>`_ for information
 Installation
 ============
 
-To install, use the standard ``python setup.py install``
+To install, use the standard ``python setup.py install`` or ``sudo pip install pygett``
+
+Documentation
+=============
+Read the full documentation on `ReadTheDocs <http://pygett.readthedocs.org/>`_.
 
 Quick Usage
 ===========
@@ -101,7 +105,7 @@ setup(author='Mark Allen',
       name='pygett',
       url='https://github.com/mrallen1/pygett',
       download_url='https://github.com/mrallen1/pygett',
-      version='1.0.1',
+      version='1.0.2',
       license='MIT',
       platforms=['Linux','Windows'],
       packages=['pygett'],

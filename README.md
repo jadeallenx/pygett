@@ -8,7 +8,12 @@ the [Ge.tt Developer's Documentation](http://ge.tt/developers) for information o
 
 Installation
 ------------
-To install, use the standard `python setup.py install`
+To install, use the standard `python setup.py install` or `sudo pip install pygett`
+
+Documentation
+-------------
+Read the full documentation on [ReadTheDocs](http://pygett.readthedocs.org/).
+
 
 Quick Usage
 -----------
