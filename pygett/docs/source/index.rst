@@ -67,19 +67,16 @@ Downloading file content::
     file = client.get_file("4ddfds", 0)
     buffer = file.contents()
 
-Most methods return a `Gett`_ specific object such as `GettShare`_, `GettFile`_ or `GettUser`_.
+Most methods return a :py:mod:`pygett.base.Gett` specific object such as :py:mod:`pygett.shares.GettShare`, 
+:py:mod:`pygett.files.GettFile` or :py:mod:`pygett.user.GettUser`.
 
-Contents:
+Contents
+========
 
 .. toctree::
    :maxdepth: 2
 
-   base
-   shares
-   files
-   user
-   exceptions
-   request
+   pygett
 
 License
 =======

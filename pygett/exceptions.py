@@ -2,16 +2,12 @@ import simplejson as json
 
 class GettError(Exception):
     """
-    =========
-    GettError
-    =========
+    Base error class
 
-    Attributes
-    ==========
-
-    - ``http_status`` The HTTP status code from the remote server
-    - ``endpoint`` The URI to which a request was attempted
-    - ``error`` A message describing the error
+    **Attributes**
+        - ``http_status`` The HTTP status code from the remote server
+        - ``endpoint`` The URI to which a request was attempted
+        - ``error`` A message describing the error
     """
     def __init__(self, status_code, endpoint, params):
         self.http_status = status_code

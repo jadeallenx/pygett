@@ -3,24 +3,13 @@ from files import GettFile
 
 class GettShare(object):
     """
-    =========
-    GettShare
-    =========
-
     Encapsulate a share in the Gett service.
 
-    Attributes
-    ==========
-    - ``sharename`` The sharename
-    - ``title`` The share title (if any)
-    - ``created`` Unix epoch seconds when the share was created
-    - ``files`` A list of all files contained in a share
-
-    Methods
-    =======
-    - ``update()`` - Add, modify or remove a share's title
-    - ``destroy()`` - Delete share and all associated files
-    - ``refresh()`` - Refresh share metadata
+    **Attributes**
+        - ``sharename`` The sharename
+        - ``title`` The share title (if any)
+        - ``created`` Unix epoch seconds when the share was created
+        - ``files`` A list of all files contained in a share as :py:mod:`pygett.files.GettFile` objects
     """
     def __init__(self, user, **kwargs):
         self.user = user
@@ -47,8 +36,6 @@ class GettShare(object):
 
     def update(self, **kwargs):
         """
-        **update**
-
         Add, remove or modify a share's title.
 
         Input:
@@ -60,6 +47,7 @@ class GettShare(object):
             * None
 
         Example::
+
             share = client.get_share("4ddfds")
             share.update(title="Example") # Set title to Example
             share.update()                # Remove title
@@ -76,8 +64,6 @@ class GettShare(object):
 
     def destroy(self):
         """
-        **destroy**
-
         This method removes this share and all of its associated files. There is no way to recover a share or its contents
         once this method has been called.
 
@@ -88,6 +74,7 @@ class GettShare(object):
             * ``True``
 
         Example::
+
             client.get_share("4ddfds").destroy()
         """
         response = GettRequest().post("/shares/%s/destroy?accesstoken=%s" % (self.sharename, self.user.access_token()), None)
@@ -97,8 +84,6 @@ class GettShare(object):
 
     def refresh(self):
         """
-        **refresh**
-
         This method refreshes the object with current metadata from the Gett service.
 
         Input:
@@ -108,6 +93,7 @@ class GettShare(object):
             * None
 
         Example::
+
             share = client.get_share("4ddfds")
             print share.files[0].filename      # prints 'foobar'
             if share.files[0].destroy():

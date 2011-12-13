@@ -1,42 +1,22 @@
-"""
-Ge.tt Python bindings
-:author Mark Allen
-:version 1.0
-"""
-
 from request import GettRequest
 
 class GettFile(object):
     """
-    ========
-    GettFile
-    ========
-
     Encapsulate a file in the Gett service.
 
-    Attributes
-    ==========
+    **Attributes**
 
     This object has the following attributes:
-    - ``fileid`` - A file id as assigned by the Gett service
-    - ``sharename`` - The sharename in which this file is contained
-    - ``downloads`` - The number of downloads of this file
-    - ``getturl`` - The URL at which this file can be viewed in a browser
-    - ``filename`` - The user specified filename 
-    - ``readystate`` - The Gett state of this file
+        - ``fileid`` - A file id as assigned by the Gett service
+        - ``sharename`` - The sharename in which this file is contained
+        - ``downloads`` - The number of downloads of this file
+        - ``getturl`` - The URL at which this file can be viewed in a browser
+        - ``filename`` - The user specified filename 
+        - ``readystate`` - The Gett state of this file
 
     During file uploads, the following attributes will be set:
-    - ``put_upload_url`` - A URL suitable for use with the PUT HTTP verb (see ``send_file()``_)
-    - ``post_upload_url`` - A URL suitable for use with the POST HTTP verb 
-
-    Methods
-    =======
-    - ``contents()`` - Download the contents of this file
-    - ``thumbnail()`` - Get a thumbnail of this file (if it is image data)
-    - ``destroy()`` - Remove this file and its content from the Gett service
-    - ``upload_url()`` - Get an upload_url to overwrite file's content
-    - ``send_data()`` - Transmit data to the Gett service for this file's metadata
-    - ``refresh()`` - Update file metadata from Gett service
+        - ``put_upload_url`` - A URL suitable for use with the PUT HTTP verb (see ``send_file()``)
+        - ``post_upload_url`` - A URL suitable for use with the POST HTTP verb 
     """
 
     def __init__(self, user, **kwargs):
@@ -66,9 +46,7 @@ class GettFile(object):
 
     def contents(self):
         """
-        **contents**
-
-        This method downloads the contents of the file represented by a `GettFile`_ object's metadata.
+        This method downloads the contents of the file represented by a `GettFile` object's metadata.
 
         Input:
             * None
@@ -89,8 +67,6 @@ class GettFile(object):
 
     def thumbnail(self):
         """
-        **thumbnail**
-
         This method returns a thumbnail representation of the file if the data is a supported graphics format.
 
         Input:
@@ -100,6 +76,7 @@ class GettFile(object):
             * A byte stream representing a thumbnail of a support graphics file
 
         Example::
+
             file = client.get_file("4ddfds", 0)
             open("thumbnail.jpg", "wb").write(file.thumbnail())
         """
@@ -109,8 +86,6 @@ class GettFile(object):
 
     def destroy(self):
         """
-        **destroy**
-
         This method removes the file's content and metadata from the Gett service.  There is no way to recover
         the data once this method has successfully completed.
 
@@ -121,6 +96,7 @@ class GettFile(object):
             * ``True``
 
         Example::
+
             client.get_file("4ddfds", 0).destroy()
         """
         response = GettRequest().post(("/files/%s/%s/destroy?accesstoken=%s" % self.user.access_token()), None)
@@ -130,8 +106,6 @@ class GettFile(object):
 
     def upload_url(self):
         """
-        **upload_url**
-
         This method generates URLs which allow overwriting a file's content with new content. The output is suitable
         for use in the ``send_data()`` method below.
 
@@ -142,6 +116,7 @@ class GettFile(object):
             * A URL (string)
 
         Example::
+
             file = client.get_file("4ddfds", 0)
             file.send_data(put_url=file.upload_url, data=open("example.txt", "rb").read())
 
@@ -155,8 +130,6 @@ class GettFile(object):
 
     def refresh(self):
         """
-        **refresh**
-
         Retrieve current file metadata from the Gett service.
 
         Input:
@@ -166,6 +139,7 @@ class GettFile(object):
             * None
 
         Example::
+
             file = client.get_file("4ddfds", 0)
             print "File size: %s" % file.size  # File size: 96
             file.send_data(put_url=file.upload_url, data=open("example.txt", "rb").read())
@@ -179,8 +153,6 @@ class GettFile(object):
 
     def send_data(self, **kwargs):
         """
-        **send_data**
-
         This method transmits data to the Gett service.
 
         Input:
@@ -191,6 +163,7 @@ class GettFile(object):
             * ``True``
 
         Example::
+
             if file.send_data(put_url=file.upload_url, data=open("example.txt", "rb").read()):
                 print "Your file has been uploaded."
         """

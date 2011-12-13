@@ -1,9 +1,3 @@
-"""
-Ge.tt Python bindings
-:author Mark Allen
-:version 1.0
-"""
-
 import re
 import time
 
@@ -14,27 +8,15 @@ from files import GettFile
 
 class Gett(object):
     """
-    ====
-    Gett
-    ====
-
     Base client object
 
     Requires the following keyword arguments:
-    -``apikey`` - The API key assigned to an application by Gett
-    -``email`` - The email address linked to the API key
-    -``password`` - The password linked to the API key
+        - ``apikey`` - The API key assigned to an application by Gett
+        - ``email`` - The email address linked to the API key
+        - ``password`` - The password linked to the API key
 
     **Attribute**
-    - ``user`` - a GettUser_ object (consumes initialization parameters)
-
-    **Methods**:
-    - ``get_shares()`` - return a dict of *all* shares
-    - ``get_shares_list()`` - return a list of *all* shares
-    - ``get_share()`` - get a specific share
-    - ``get_file()`` - get a specific file
-    - ``create_share()`` - create a new share
-    - ``upload_file`` - upload a file
+        - ``user`` - a :py:mod:`pygett.user.GettUser` object
     """
 
     def __init__(self, *args, **kwargs):
@@ -79,16 +61,14 @@ class Gett(object):
 
     def get_shares(self, **kwargs):
         """
-        **get_shares**
-              
-        Gets *all* shares. Takes optional keyword arguments.
+        Gets *all* shares.
 
         Input:
             * ``skip`` the number of shares to skip (optional)
             * ``limit`` the maximum number of shares to return (optional)
 
         Output:
-            * a dict where keys are sharenames and the values are corresponding `GettShare`_ objects
+            * a dict where keys are sharenames and the values are corresponding :py:mod:`pygett.shares.GettShare` objects
 
         Example::
                 
@@ -107,16 +87,14 @@ class Gett(object):
 
     def get_shares_list(self, **kwargs):
         """
-        **get_shares_list** 
-
-        Gets *all* shares. Takes optional keyword arguments.
+        Gets *all* shares.
               
         Input:
             * ``skip`` the number of shares to skip (optional)
             * ``limit`` the maximum number of shares to return (optional)
 
         Output:
-            * a list of `GettShare`_ objects
+            * a list of :py:mod:`pygett.shares.GettShare` objects
 
         Example::
 
@@ -135,15 +113,13 @@ class Gett(object):
 
     def get_share(self, sharename):
         """
-        **get_share**
-            
         Get a specific share. Does not require authentication.
 
         Input:
             * A sharename
 
         Output:
-            * A `GettShare`_ object
+            * A :py:mod:`pygett.shares.GettShare` object
 
         Example::
 
@@ -157,8 +133,6 @@ class Gett(object):
 
     def get_file(self, sharename, fileid):
         """
-        **get_file**
-              
         Get a specific file. Does not require authentication.
 
         Input:
@@ -166,7 +140,7 @@ class Gett(object):
             * A fileid - must be an integer
 
         Output:
-            * A `GettFile`_ object
+            * A :py:mod:`pygett.files.GettFile` object
 
         Example::
 
@@ -183,15 +157,13 @@ class Gett(object):
 
     def create_share(self, **kwargs):
         """
-        **create_share** 
-              
         Create a new share. Takes a keyword argument.
 
         Input:
             * ``title`` optional share title (optional)
 
         Output:
-            * A `GettShare`_ object
+            * A :py:mod:`pygett.shares.GettShare` object
 
         Example::
 
@@ -209,8 +181,6 @@ class Gett(object):
 
     def upload_file(self, **kwargs):
         """
-        **upload_file**
-              
         Upload a file to the Gett service. Takes keyword arguments.
 
         Input:
@@ -220,7 +190,7 @@ class Gett(object):
             * ``title`` the share title to use if a new share is created (optional)
 
         Output:
-            * A `GettFile`_ object
+            * A :py:mod:`pygett.files.GettFile` object
 
         Example::
 

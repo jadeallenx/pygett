@@ -1,41 +1,23 @@
-"""
-Gett User class
-:author Mark Allen
-:version 1.0
-"""
-
 from time import time
 from request import GettRequest
 
 class GettUser(object):
     """
-    ========
-    GettUser
-    ========
-
     Encapsulates Gett user functionality
 
-    Attributes
-    ==========
-    This object has the following attributes:
-    - ``apikey`` The API key assigned by Gett for an application
-    - ``email`` The email linked to the API key
-    - ``password`` The password linked to the API key
+    **Attributes**
+        - ``apikey`` The API key assigned by Gett for an application
+        - ``email`` The email linked to the API key
+        - ``password`` The password linked to the API key
 
     After a successful login the following attributes are populated:
-    - ``refresh_token`` Used to get a new valid access token without requiring the API key, email and password
-    - ``access_token_expires`` - Epoch seconds until the current access token is no longer valid. Typically 86400 seconds from login. (Suitable for use with ``time.localtime()``)
-    - ``access_token_grace`` - How many seconds before an access token is scheduled to expire to attempt a renewal. (Defaults to 3600 seconds)
-    - ``userid`` - User ID string supplied by Gett
-    - ``fullname`` - The full name linked to an authenticated user account
-    - ``storage_used`` - The amount of storage consumed (in total) for this user account. (Unit: bytes)
-    - ``storage_limit`` - The maximum number of bytes available for storage. (Unit: bytes)
-
-    Methods
-    =======
-    - ``login()`` Use the provided credentials to get an access token
-    - ``access_token()`` Return a valid access token 
-    - ``refresh()`` Update this object with data from the remote server
+        - ``refresh_token`` Used to get a new valid access token without requiring the API key, email and password
+        - ``access_token_expires`` - Epoch seconds until the current access token is no longer valid. Typically 86400 seconds from login. (Suitable for use with ``time.localtime()``)
+        - ``access_token_grace`` - How many seconds before an access token is scheduled to expire to attempt a renewal. (Defaults to 3600 seconds)
+        - ``userid`` - User ID string supplied by Gett
+        - ``fullname`` - The full name linked to an authenticated user account
+        - ``storage_used`` - The amount of storage consumed (in total) for this user account. (Unit: bytes)
+        - ``storage_limit`` - The maximum number of bytes available for storage. (Unit: bytes)
     """
 
     def __init__(self, apikey, email, password):

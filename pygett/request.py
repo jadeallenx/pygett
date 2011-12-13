@@ -1,9 +1,16 @@
-
 import requests
 import simplejson as json
 from exceptions import GettError
 
 class GettResponse(object):
+    """
+    Encapsulate responses from the Gett service
+
+    **Attributes**
+        - ``http_status`` The status code from the remote endpoint
+        - ``string_response`` The response as a string, before deserialization
+        - ``response`` The response serialized into a dict
+    """
     def __init__(self, http_status, response):
         self.http_status = http_status
         self.string_response = response
@@ -25,6 +32,9 @@ class GettResponse(object):
 
 
 class BaseRequest(object):
+    """
+    Base request class
+    """
     def __init__(self, *args, **kwargs):
         self.base_url = "https://open.ge.tt/1"
 
@@ -32,10 +42,36 @@ class BaseRequest(object):
         pass
 
     def get(self, endpoint, *args, **kwargs):
+        """
+        **get**
+
+        Make a GET call to a remote endpoint
+
+        Input:
+            * An endpoint relative to the ``base_url``
+
+        Output:
+            * A :py:mod:`pygett.request.GettResponse` object
+        """
         endpoint = self.base_url + endpoint
         return self._make_request(endpoint, type='GET')
 
     def post(self, endpoint, d, *args, **kwargs):
+        """
+        **post**
+
+        Make a POST call to a remote endpoint
+
+        Input:
+            * An endpoint relative to the ``base_url``
+            * POST data
+
+        **NOTE**: Passed POST data will be automatically serialized to a JSON string 
+        if it's not already a string
+
+        Output:
+            * A :py:mod:`pygett.request.GettResponse` object
+        """
         endpoint = self.base_url + endpoint
         if not isinstance(d, str):
             d = json.dumps(d)
@@ -43,10 +79,31 @@ class BaseRequest(object):
         return self._make_request(endpoint, type='POST', data=d)
 
     def put(self, endpoint, d, *args, **kwargs):
+        """
+        **put**
+
+        Make a PUT call to a remove endpoint
+
+        Input:
+            * An absolute endpoint 
+            * A data stream
+
+        Output:
+            * A :py:mod:`pygett.request.GettResponse` object
+        """
+            
         return self._make_request(endpoint, type='PUT', data=d)
 
-
 class GettRequest(BaseRequest):
+    """
+    Encapsulate a request to the Gett service
+
+    **Attributes**
+        - ``base_url`` The base URL of the service (defaults to https://open.ge.tt/1)
+        - ``endpoint`` The full URL of the remote endpoint
+        - ``type`` The type of request (GET, POST, or PUT)
+        - ``data`` The data for a POST or PUT request
+    """
     def __init__(self, *args, **kwargs):
         super(BaseRequest,self).__init__(*args, **kwargs)
         self.base_url = "https://open.ge.tt/1"
