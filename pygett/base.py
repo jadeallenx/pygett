@@ -143,7 +143,7 @@ class Gett(object):
             * A sharename
 
         Output:
-            * A GettShare_ object
+            * A `GettShare`_ object
 
         Example::
 
@@ -166,7 +166,7 @@ class Gett(object):
             * A fileid - must be an integer
 
         Output:
-            * A GettFile_ object
+            * A `GettFile`_ object
 
         Example::
 
@@ -191,7 +191,7 @@ class Gett(object):
             * ``title`` optional share title (optional)
 
         Output:
-            * A GettShare_ object
+            * A `GettShare`_ object
 
         Example::
 
@@ -220,7 +220,7 @@ class Gett(object):
             * ``title`` the share title to use if a new share is created (optional)
 
         Output:
-            * A GettFile_ object
+            * A `GettFile`_ object
 
         Example::
 

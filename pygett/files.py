@@ -65,22 +65,87 @@ class GettFile(object):
         return "<GettFile: %s (%s/%s)>" % (self.filename, self.sharename, self.fileid)
 
     def contents(self):
+        """
+        **contents**
+
+        This method downloads the contents of the file represented by a `GettFile`_ object's metadata.
+
+        Input:
+            * None
+
+        Output:
+            * A byte stream
+
+        **NOTE**: You are responsible for handling any encoding/decoding which may be necessary.
+
+        Example::
+
+            file = client.get_file("4ddfds", 0)
+            print file.contents()
+        """
         response = GettRequest().get("/files/%s/%s/blob" % (self.sharename, self.fileid))
 
         return response.response
 
     def thumbnail(self):
+        """
+        **thumbnail**
+
+        This method returns a thumbnail representation of the file if the data is a supported graphics format.
+
+        Input:
+            * None
+
+        Output:
+            * A byte stream representing a thumbnail of a support graphics file
+
+        Example::
+            file = client.get_file("4ddfds", 0)
+            open("thumbnail.jpg", "wb").write(file.thumbnail())
+        """
         response = GettRequest().get("/files/%s/%s/blob/thumb" % (self.sharename, self.fileid))
 
         return response.response
 
     def destroy(self):
+        """
+        **destroy**
+
+        This method removes the file's content and metadata from the Gett service.  There is no way to recover
+        the data once this method has successfully completed.
+
+        Input:
+            * None
+
+        Output:
+            * ``True``
+
+        Example::
+            client.get_file("4ddfds", 0).destroy()
+        """
         response = GettRequest().post(("/files/%s/%s/destroy?accesstoken=%s" % self.user.access_token()), None)
 
         if response.http_status == 200:
             return True
 
     def upload_url(self):
+        """
+        **upload_url**
+
+        This method generates URLs which allow overwriting a file's content with new content. The output is suitable
+        for use in the ``send_data()`` method below.
+
+        Input:
+            * None
+
+        Output:
+            * A URL (string)
+
+        Example::
+            file = client.get_file("4ddfds", 0)
+            file.send_data(put_url=file.upload_url, data=open("example.txt", "rb").read())
+
+        """
         if self.put_upload_url:
             return self.put_upload_url
         else:
@@ -89,12 +154,46 @@ class GettFile(object):
                 return response.response['puturl']
 
     def refresh(self):
+        """
+        **refresh**
+
+        Retrieve current file metadata from the Gett service.
+
+        Input:
+            * None
+
+        Output:
+            * None
+
+        Example::
+            file = client.get_file("4ddfds", 0)
+            print "File size: %s" % file.size  # File size: 96
+            file.send_data(put_url=file.upload_url, data=open("example.txt", "rb").read())
+            file.refresh()
+            print "File size: %s" % file.size  # File size: 109
+        """
         response = GettRequest().get("/files/%s/%s" % (self.sharename, self.fileid))
 
         if response.http_status == 200:
             self.__init__(self.user, response.response)
 
     def send_data(self, **kwargs):
+        """
+        **send_data**
+
+        This method transmits data to the Gett service.
+
+        Input:
+            * ``put_url`` A PUT url to use when transmitting the data (required)
+            * ``data`` A byte stream (required)
+
+        Output:
+            * ``True``
+
+        Example::
+            if file.send_data(put_url=file.upload_url, data=open("example.txt", "rb").read()):
+                print "Your file has been uploaded."
+        """
         put_url = None
         if 'put_url' in kwargs:
             put_url = kwargs['put_url']

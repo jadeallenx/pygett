@@ -67,12 +67,19 @@ Downloading file content::
     file = client.get_file("4ddfds", 0)
     buffer = file.contents()
 
-Most methods return a Gett specific object such as GettShare, GettFile or GettUser.
+Most methods return a `Gett`_ specific object such as `GettShare`_, `GettFile`_ or `GettUser`_.
 
 Contents:
 
 .. toctree::
    :maxdepth: 2
+
+   base
+   shares
+   files
+   user
+   exceptions
+   request
 
 License
 =======

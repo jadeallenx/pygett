@@ -1,8 +1,3 @@
-"""
-Ge.tt Python bindings 
-author: Mark Allen
-version: 1.0
-"""
 import simplejson as json
 
 class GettError(Exception):

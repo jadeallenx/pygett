@@ -2,6 +2,26 @@ from request import GettRequest
 from files import GettFile
 
 class GettShare(object):
+    """
+    =========
+    GettShare
+    =========
+
+    Encapsulate a share in the Gett service.
+
+    Attributes
+    ==========
+    - ``sharename`` The sharename
+    - ``title`` The share title (if any)
+    - ``created`` Unix epoch seconds when the share was created
+    - ``files`` A list of all files contained in a share
+
+    Methods
+    =======
+    - ``update()`` - Add, modify or remove a share's title
+    - ``destroy()`` - Delete share and all associated files
+    - ``refresh()`` - Refresh share metadata
+    """
     def __init__(self, user, **kwargs):
         self.user = user
         self.sharename = None
@@ -26,6 +46,24 @@ class GettShare(object):
         return "<GettShare: %s>" % self.sharename
 
     def update(self, **kwargs):
+        """
+        **update**
+
+        Add, remove or modify a share's title.
+
+        Input:
+            * ``title`` The share title, if any (optional)
+
+        **NOTE**: Passing ``None`` or calling this method with an empty argument list will remove the share's title.
+
+        Output:
+            * None
+
+        Example::
+            share = client.get_share("4ddfds")
+            share.update(title="Example") # Set title to Example
+            share.update()                # Remove title
+        """
         if 'title' in kwargs:
             params = { "title": kwargs['title'] }
         else:
@@ -37,12 +75,45 @@ class GettShare(object):
             self.__init__(self.user, **response.response)
 
     def destroy(self):
+        """
+        **destroy**
+
+        This method removes this share and all of its associated files. There is no way to recover a share or its contents
+        once this method has been called.
+
+        Input:
+            * None
+
+        Output:
+            * ``True``
+
+        Example::
+            client.get_share("4ddfds").destroy()
+        """
         response = GettRequest().post("/shares/%s/destroy?accesstoken=%s" % (self.sharename, self.user.access_token()), None)
 
         if response.http_status == 200:
             return True
 
     def refresh(self):
+        """
+        **refresh**
+
+        This method refreshes the object with current metadata from the Gett service.
+
+        Input:
+            * None
+
+        Output:
+            * None
+
+        Example::
+            share = client.get_share("4ddfds")
+            print share.files[0].filename      # prints 'foobar'
+            if share.files[0].destroy():
+                share.refresh()
+                print share.files[0].filename  # now prints 'barbaz'
+        """
         response = GettRequest().get("/shares/%s" % self.sharename)
 
         if response.http_status == 200:
