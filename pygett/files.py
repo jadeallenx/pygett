@@ -1,5 +1,6 @@
 from request import GettRequest
 
+
 class GettFile(object):
     """
     Encapsulate a file in the Gett service.
@@ -11,12 +12,12 @@ class GettFile(object):
         - ``sharename`` - The sharename in which this file is contained
         - ``downloads`` - The number of downloads of this file
         - ``getturl`` - The URL at which this file can be viewed in a browser
-        - ``filename`` - The user specified filename 
+        - ``filename`` - The user specified filename
         - ``readystate`` - The Gett state of this file
 
     During file uploads, the following attributes will be set:
         - ``put_upload_url`` - A URL suitable for use with the PUT HTTP verb (see ``send_file()``)
-        - ``post_upload_url`` - A URL suitable for use with the POST HTTP verb 
+        - ``post_upload_url`` - A URL suitable for use with the POST HTTP verb
     """
 
     def __init__(self, user, **kwargs):

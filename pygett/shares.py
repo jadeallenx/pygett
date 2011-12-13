@@ -1,6 +1,7 @@
 from request import GettRequest
 from files import GettFile
 
+
 class GettShare(object):
     """
     Encapsulate a share in the Gett service.
@@ -53,9 +54,9 @@ class GettShare(object):
             share.update()                # Remove title
         """
         if 'title' in kwargs:
-            params = { "title": kwargs['title'] }
+            params = {"title": kwargs['title']}
         else:
-            params = { "title": None }
+            params = {"title": None}
 
         response = GettRequest().post("/shares/%s/update?accesstoken=%s" % (self.sharename, self.user.access_token()), params)
 

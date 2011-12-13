@@ -1,6 +1,7 @@
 from time import time
 from request import GettRequest
 
+
 class GettUser(object):
     """
     Encapsulates Gett user functionality
@@ -44,7 +45,7 @@ class GettUser(object):
             return "<GettUser: %s>" % self.fullname
         else:
             return "<GettUser: %s (not logged in)>" % self.email
-            
+
     def login(self, **params):
         """
         **login**
@@ -58,7 +59,7 @@ class GettUser(object):
             * ``True``
 
         Example::
-            
+
             if client.user.login():
                 print "You have %s bytes of storage remaining." % ( client.user.storage_limit - client_user.storage_used )
         """
@@ -103,8 +104,8 @@ class GettUser(object):
         if not self._access_token:
             self.login()
 
-        if time() > ( self.access_token_expires - self.access_token_grace ):
-            self.login({ "refreshtoken": self.refresh_token })
+        if time() > (self.access_token_expires - self.access_token_grace):
+            self.login({"refreshtoken": self.refresh_token})
 
         return self._access_token
 
@@ -130,9 +131,9 @@ class GettUser(object):
         response = GettRequest().get("/users/me?accesstoken=%s" % self.access_token())
 
         if response.http_status == 200:
-           self.userid = response.response['userid']
-           self.fullname = response.response['fullname']
-           self.storage_used = response.response['storage']['used']
-           self.storage_limit = response.response['storage']['limit']
+            self.userid = response.response['userid']
+            self.fullname = response.response['fullname']
+            self.storage_used = response.response['storage']['used']
+            self.storage_limit = response.response['storage']['limit']
 
-           return True
+            return True

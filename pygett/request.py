@@ -2,6 +2,7 @@ import requests
 import simplejson as json
 from exceptions import GettError
 
+
 class GettResponse(object):
     """
     Encapsulate responses from the Gett service
@@ -66,7 +67,7 @@ class BaseRequest(object):
             * An endpoint relative to the ``base_url``
             * POST data
 
-        **NOTE**: Passed POST data will be automatically serialized to a JSON string 
+        **NOTE**: Passed POST data will be automatically serialized to a JSON string
         if it's not already a string
 
         Output:
@@ -85,14 +86,15 @@ class BaseRequest(object):
         Make a PUT call to a remove endpoint
 
         Input:
-            * An absolute endpoint 
+            * An absolute endpoint
             * A data stream
 
         Output:
             * A :py:mod:`pygett.request.GettResponse` object
         """
-            
+
         return self._make_request(endpoint, type='PUT', data=d)
+
 
 class GettRequest(BaseRequest):
     """
@@ -105,7 +107,7 @@ class GettRequest(BaseRequest):
         - ``data`` The data for a POST or PUT request
     """
     def __init__(self, *args, **kwargs):
-        super(BaseRequest,self).__init__(*args, **kwargs)
+        super(BaseRequest, self).__init__(*args, **kwargs)
         self.base_url = "https://open.ge.tt/1"
         self.endpoint = None
         self.type = None

@@ -6,6 +6,7 @@ from request import GettRequest
 from shares import GettShare
 from files import GettFile
 
+
 class Gett(object):
     """
     Base client object
@@ -29,7 +30,7 @@ class Gett(object):
         self._check_params(**kwargs)
         self.user = GettUser(kwargs['apikey'], kwargs['email'], kwargs['password'])
 
-    def _check_params(self,**kwargs):
+    def _check_params(self, **kwargs):
         if not kwargs:
             raise AttributeError('Missing required parameters: %s' % self.required_params)
 
@@ -49,7 +50,7 @@ class Gett(object):
             if k == 'password':
                 if not isinstance(v, str):
                     raise AttributeError("Parameter 'password' must be a string")
-    
+
     def _get_shares(self, **kwargs):
         endpoint = "/shares?accesstoken=%s" % self.user.access_token()
         if 'limit' in kwargs and isinstance(kwargs['limit'], int) and kwargs['limit'] > 0:
@@ -71,7 +72,7 @@ class Gett(object):
             * a dict where keys are sharenames and the values are corresponding :py:mod:`pygett.shares.GettShare` objects
 
         Example::
-                
+
             shares = client.get_shares()
         """
 
@@ -88,7 +89,7 @@ class Gett(object):
     def get_shares_list(self, **kwargs):
         """
         Gets *all* shares.
-              
+
         Input:
             * ``skip`` the number of shares to skip (optional)
             * ``limit`` the maximum number of shares to return (optional)
@@ -172,7 +173,7 @@ class Gett(object):
 
         params = None
         if 'title' in kwargs:
-            params = { "title": kwargs['title'] }
+            params = {"title": kwargs['title']}
 
         response = GettRequest().post(("/shares/create?accesstoken=%s" % self.user.access_token()), params)
 
@@ -211,7 +212,7 @@ class Gett(object):
         if 'sharename' not in kwargs:
             share = None
             if 'title' in kwargs:
-                share = self.create_share(title=kwargs['title']) 
+                share = self.create_share(title=kwargs['title'])
             else:
                 share = self.create_share()
             sharename = share.sharename

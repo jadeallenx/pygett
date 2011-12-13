@@ -1,5 +1,6 @@
 import simplejson as json
 
+
 class GettError(Exception):
     """
     Base error class
