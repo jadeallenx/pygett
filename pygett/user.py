@@ -1,5 +1,5 @@
 from time import time
-from request import GettRequest
+from pygett.request import GettRequest
 
 
 class GettUser(object):

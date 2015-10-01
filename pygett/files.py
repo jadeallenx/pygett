@@ -1,4 +1,4 @@
-from request import GettRequest
+from pygett.request import GettRequest
 
 
 class GettFile(object):

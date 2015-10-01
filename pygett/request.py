@@ -1,6 +1,6 @@
 import requests
 import simplejson as json
-from exceptions import GettError
+from pygett.exceptions import GettError
 
 
 class GettResponse(object):
