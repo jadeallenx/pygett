@@ -1,10 +1,10 @@
 import re
 import time
 
-from user import GettUser
-from request import GettRequest
-from shares import GettShare
-from files import GettFile
+from pygett.user import GettUser
+from pygett.request import GettRequest
+from pygett.shares import GettShare
+from pygett.files import GettFile
 
 
 class Gett(object):

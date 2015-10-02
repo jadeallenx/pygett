@@ -1,5 +1,5 @@
-from request import GettRequest
-from files import GettFile
+from pygett.request import GettRequest
+from pygett.files import GettFile
 
 
 class GettShare(object):
